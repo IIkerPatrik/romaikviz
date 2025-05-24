@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Történelmi Kvíz – Római kor</title>
+  <style>
+    body { font-family: sans-serif; background: #f4f4f4; padding: 20px; }
+    .quiz-container { max-width: 700px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h1 { text-align: center; }
+    .question { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 8px; background: #fafafa; }
+    .correct-answer { color: green; font-weight: bold; }
+    .wrong-answer { color: red; font-weight: bold; }
+    button { background: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; display: block; margin: auto; }
+    button:hover { background: #45a049; }
+    .result { font-weight: bold; margin-top: 30px; text-align: center; font-size: 18px; }
+    #password-screen { text-align: center; margin-top: 100px; }
+    #quiz-section { display: none; }
+    input[type="password"] { padding: 10px; font-size: 16px; width: 200px; }
+  </style>
+</head>
+<body>
+  <div id="password-screen">
+    <h2>Kérlek, add meg a jelszót a kvíz eléréséhez:</h2>
+    <input type="password" id="password-input" placeholder="Jelszó">
+    <br><br>
+    <button onclick="checkPassword()">Belépés</button>
+    <p id="password-message" style="color:red; font-weight:bold;"></p>
+  </div>
+
+  <div id="quiz-section">
+    <div class="quiz-container">
+      <h1>Történelmi Kvíz – Római kor</h1>
+      <form id="quiz-form"></form>
+      <button type="button" onclick="submitQuiz()">Ellenőrzés</button>
+      <div class="result" id="result"></div>
+    </div>
+  </div>
+
+  <script>
+    function checkPassword() {
+      const input = document.getElementById("password-input").value;
+      const message = document.getElementById("password-message");
+      if (input === "753") {
+        document.getElementById("password-screen").style.display = "none";
+        document.getElementById("quiz-section").style.display = "block";
+      } else {
+        message.textContent = "Hibás jelszó!";
+      }
+    }
+
+    const questions = [
+      { question: "Mikor alapították Rómát a hagyomány szerint?", answers: ["753 i.e.", "509 i.e.", "44 i.e.", "27 i.e."], correct: 0 },
+      { question: "Ki volt az első római császár?", answers: ["Augustus", "Julius Caesar", "Nero", "Tiberius"], correct: 0 },
+      { question: "Mit jelent a 'Senatus Populusque Romanus' (SPQR)?", answers: ["A római nép és a szenátus", "A császár hatalma", "A római hadsereg", "A város vezetése"], correct: 0 },
+      { question: "Melyik csatában győzte le Julius Caesar Pompeius-t?", answers: ["Pharszalosz", "Actium", "Cannae", "Záma"], correct: 0 },
+      { question: "Melyik császár alatt érte el legnagyobb kiterjedését a Római Birodalom?", answers: ["Traianus", "Nero", "Augustus", "Hadrianus"], correct: 0 },
+      { question: "Mi volt a Római Köztársaság fő döntéshozó testülete?", answers: ["Szenátus", "Praetorok", "Consulok", "Légiók"], correct: 0 },
+      { question: "Kik voltak a plebejusok?", answers: ["Köznép", "Rabszolgák", "Papok", "Előkelők"], correct: 0 },
+      { question: "Mi volt Julius Caesar híres mondása a Rubicon átlépésekor?", answers: ["A kocka el van vetve", "Veni, vidi, vici", "Ave Caesar", "Carpe diem"], correct: 0 },
+      { question: "Mi volt a Colosseum fő célja?", answers: ["Gladiátorjátékok", "Templom", "Senátusi ülés", "Könyvtár"], correct: 0 },
+      { question: "Melyik nép okozta a Nyugatrómai Birodalom bukását 476-ban?", answers: ["Gótok", "Hunok", "Germánok", "Frankok"], correct: 0 },
+      { question: "Ki volt a kereszténységet államvallássá tevő császár?", answers: ["Theodosius", "Constantinus", "Nero", "Diocletianus"], correct: 0 },
+      { question: "Milyen nyelvet beszéltek a rómaiak?", answers: ["Latin", "Görög", "Etruszk", "Karthágói"], correct: 0 },
+      { question: "Mi volt a római hadsereg alapegysége?", answers: ["Légió", "Kohors", "Centuria", "Manipulus"], correct: 0 },
+      { question: "Hogyan nevezték a római fürdőket?", answers: ["Thermae", "Domus", "Forum", "Templum"], correct: 0 },
+      { question: "Mit jelent a Pax Romana?", answers: ["Római béke", "Római hadjárat", "Római törvény", "Római szövetség"], correct: 0 },
+      { question: "Melyik város pusztult el a Vezúv kitörésekor 79-ben?", answers: ["Pompeii", "Roma", "Carthago", "Neapolis"], correct: 0 },
+      { question: "Mi volt a római utak egyik híres jellemzője?", answers: ["Egyenes vonalvezetés", "Kőburkolat hiánya", "Földbe vájt", "Csak katonák használták"], correct: 0 },
+      { question: "Melyik császár építtette a híres falat Britanniában?", answers: ["Hadrianus", "Claudius", "Nero", "Augustus"], correct: 0 },
+      { question: "Melyik volt a Római Birodalom keleti fővárosa?", answers: ["Konstantinápoly", "Athén", "Antiochia", "Jeruzsálem"], correct: 0 },
+      { question: "Mit jelentett a forum a római városokban?", answers: ["Piac és közéleti tér", "Várfal", "Fürdő", "Temető"], correct: 0 }
+    ];
+
+    const quizForm = document.getElementById("quiz-form");
+
+    questions.forEach((q, index) => {
+      const questionDiv = document.createElement("div");
+      questionDiv.className = "question";
+      questionDiv.id = `question-${index}`;
+      questionDiv.innerHTML = `<p><strong>${index + 1}. ${q.question}</strong></p>`;
+
+      q.answers.forEach((answer, i) => {
+        const id = `q${index}_a${i}`;
+        questionDiv.innerHTML += `
+          <label>
+            <input type="radio" name="q${index}" value="${i}" id="${id}">
+            ${answer}
+          </label><br>`;
+      });
+
+      quizForm.appendChild(questionDiv);
+    });
+
+    function submitQuiz() {
+      let score = 0;
+      questions.forEach((q, index) => {
+        const selected = document.querySelector(`input[name=q${index}]:checked`);
+        const questionEl = document.getElementById(`question-${index}`);
+
+        const oldFeedback = questionEl.querySelector(".feedback");
+        if (oldFeedback) oldFeedback.remove();
+
+        let feedback = document.createElement("div");
+        feedback.className = "feedback";
+
+        if (selected && parseInt(selected.value) === q.correct) {
+          score++;
+          feedback.innerHTML = `<p class='correct-answer'>✔ Helyes válasz!</p>`;
+        } else {
+          const correctText = q.answers[q.correct];
+          feedback.innerHTML = `<p class='wrong-answer'>✘ Helytelen vagy hiányzó válasz. A helyes válasz: <strong>${correctText}</strong></p>`;
+        }
+
+        questionEl.appendChild(feedback);
+      });
+
+      document.getElementById("result").textContent = `Eredményed: ${score} / ${questions.length}`;
+    }
+  </script>
+</body>
+</html>
