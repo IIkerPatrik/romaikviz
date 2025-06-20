@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Egyszerű Játék</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; background: #222; color: white; }
+    canvas { background: #333; margin: 20px auto; display: block; border: 2px solid #fff; }
+    #startBtn { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Fogd meg a csillagokat!</h1>
+  <button id="startBtn">Start</button>
+  <canvas id="game" width="400" height="600"></canvas>
+  <p>Pontszám: <span id="score">0</span></p>
+
+  <script>
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+    const startBtn = document.getElementById('startBtn');
+    const scoreEl = document.getElementById('score');
+
+    let player, stars, score, animationId, running;
+
+    const playerWidth = 50;
+    const playerHeight = 20;
+    const starSize = 20;
+
+    function init() {
+      player = { x: canvas.width / 2 - playerWidth / 2, y: canvas.height - playerHeight - 10, speed: 5 };
+      stars = [];
+      score = 0;
+      running = true;
+      scoreEl.textContent = score;
+      spawnStar();
+      animationId = requestAnimationFrame(loop);
+    }
+
+    function spawnStar() {
+      const x = Math.random() * (canvas.width - starSize);
+      stars.push({ x, y: -starSize, speed: 3 });
+    }
+
+    function loop() {
+      if (!running) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Draw player
+      ctx.fillStyle = 'cyan';
+      ctx.fillRect(player.x, player.y, playerWidth, playerHeight);
+
+      // Move and draw stars
+      ctx.fillStyle = 'yellow';
+      for (let i = stars.length - 1; i >= 0; i--) {
+        const star = stars[i];
+        star.y += star.speed;
+        ctx.fillRect(star.x, star.y, starSize, starSize);
+
+        // Check collision with player
+        if (
+          star.y + starSize >= player.y &&
+          star.x + starSize >= player.x &&
+          star.x <= player.x + playerWidth
+        ) {
+          stars.splice(i, 1);
+          score++;
+          scoreEl.textContent = score;
+          spawnStar();
+        } else if (star.y > canvas.height) {
+          // Missed star
+          gameOver();
+        }
+      }
+
+      if (Math.random() < 0.02) spawnStar();
+      animationId = requestAnimationFrame(loop);
+    }
+
+    function gameOver() {
+      running = false;
+      cancelAnimationFrame(animationId);
+      ctx.fillStyle = 'white';
+      ctx.font = '30px sans-serif';
+      ctx.fillText('Vége! Pontszám: ' + score, 50, canvas.height / 2);
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (!running) return;
+      if (e.key === 'ArrowLeft') {
+        player.x = Math.max(0, player.x - player.speed);
+      } else if (e.key === 'ArrowRight') {
+        player.x = Math.min(canvas.width - playerWidth, player.x + player.speed);
+      }
+    });
+
+    startBtn.onclick = () => {
+      if (!running) {
+        init();
+      } else {
+        cancelAnimationFrame(animationId);
+        running = false;
+        startBtn.textContent = 'Start';
+      }
+    };
+  </script>
+</body>
+</html>
